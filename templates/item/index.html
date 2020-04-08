@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% if g.user %}
+        <a class="action" href="{{ url_for('item.create') }}">New</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% for posts in posts_list %}
+        <el-row type="flex" class="row-bg" justify="space-around">
+            {% for post in posts %}
+                <el-card :body-style="{ padding: '0px' }">
+                    <img src="{{ url_for('static', filename=post['picture']) }}" height="287" width="350"
+                         class="image">
+                    <div style="padding: 14px;">
+                        <span>{{ post['name'] }}</span>
+                        <div class="bottom clearfix">
+                            <p>价格:{{ post['price'] }}</p>
+                            <el-button type="text" class="button" @click="showdetail({{ post }})">查看详情</el-button>
+                        </div>
+                    </div>
+                </el-card>
+            {% endfor %}
+        </el-row>
+    {% endfor %}
+
+    <el-drawer
+            title="商品详情"
+            :visible.sync="drawer"
+            :direction="direction"
+            size="50%"
+            :before-close="handleClose">
+        <el-card>
+            <el-container style="height: 50%">
+                <el-aside style="width: 50%">
+                    <img :src="get_picture_url(showiteminfo['picture'])" height="200" width="200" class="image">
+                    <div>
+                        <span>{[ showiteminfo['name'] ]}</span>
+                        <p>价格:{[ showiteminfo['price'] ]}</p>
+                        <p>描述:{[ showiteminfo['describe'] ]}</p>
+                    </div>
+                </el-aside>
+                <el-main>
+                    <el-input
+                            type="textarea"
+                            :rows="4"
+                            placeholder="请输入内容"
+                            v-model="textarea">
+                    </el-input>
+                    <el-button type="primary" @click="addcomment()">添加评论</el-button>
+                    <el-button type="primary" @click="addshopping(showiteminfo)">加入购物车</el-button>
+                    <el-button type="primary">进入购物车</el-button>
+
+                </el-main>
+            </el-container>
+            <el-collapse v-model="activeNames" @change="handleChange">
+                <div v-for="(item, i) in comments">
+                    <el-collapse-item :title="item.value" :name="i">
+                        <div>{[ item.name ]}</div>
+                    </el-collapse-item>
+                </div>
+            </el-collapse>
+        </el-card>
+
+
+    </el-drawer>
+{% endblock %}
+
+<style>
+    .time {
+        font-size: 13px;
+        color: #999;
+    }
+
+    .bottom {
+        margin-top: 13px;
+        line-height: 12px;
+    }
+
+    .button {
+        padding: 0;
+        float: right;
+    }
+
+    .image {
+        width: 100%;
+        display: block;
+    }
+
+    .clearfix:before,
+    .clearfix:after {
+        display: table;
+        content: "";
+    }
+
+    .clearfix:after {
+        clear: both
+    }
+
+    .el-drawer.rtl {
+        width: 20%;
+    }
+</style>

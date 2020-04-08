@@ -1,0 +1,196 @@
+<!doctype html>
+<title>{% block title %}{% endblock %} - Flaskr</title>
+{#<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">#}
+<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+<body>
+<div id="app">
+    <el-container>
+        <el-header>
+            <el-row :gutter="20">
+                <el-col :span="8"><div class="grid-content bg-purple">
+                    <img src="{{ url_for('static', filename='logo.png') }}" height="40" /></div></el-col>
+                <el-col :span="8"><div class="grid-content bg-purple">
+                    <el-input v-model="input" placeholder="请输入查询内容" prefix-icon="el-icon-search"></el-input></div></el-col>
+                <el-col :span="8"><div class="grid-content bg-purple">
+                <div class="grid-content bg-purple">
+                <el-link href="{{ url_for('auth.register') }}" style="float:right">
+                    <el-button type="primary" icon="el-icon-present">购物车</el-button>
+                </el-link>
+                    {% if g.user %}
+                        <span>{{ g.user['username'] }}</span>
+                        <el-link href="{{ url_for('auth.logout') }}" style="float:right">
+                            <el-button type="primary" icon="el-icon-present">Log Out</el-button>
+                        </el-link>
+                    {% else %}
+                        <el-link href="{{ url_for('auth.register') }}" style="float:right">
+                            <el-button type="primary" icon="el-icon-present">register</el-button>
+                        </el-link>
+                        <el-link href="{{ url_for('auth.login') }}" style="float:right">
+                            <el-button type="primary" icon="el-icon-present">Log In</el-button>
+                        </el-link>
+                    {% endif %}
+                </div></div></el-col>
+            </el-row>
+
+        </el-header>
+        <el-main>
+
+            <section class="content">
+                <header>
+                    {% block header %}  {% endblock %}
+                </header>
+                {% block banner %}
+                <div class="block">
+                    <el-carousel height="400px">
+                        <el-carousel-item>
+                            <img src="{{ url_for('static', filename="big1.jpg") }}" style="height: 400px;width: 100%;background-size: cover" />
+                        </el-carousel-item>
+                        <el-carousel-item>
+                            <img src="{{ url_for('static', filename="big2.jpg") }}" style="height: 400px;width: 100%;background-size: cover" />
+                        </el-carousel-item>
+                        <el-carousel-item>
+                            <img src="{{ url_for('static', filename="big3.jpg") }}" style="height: 400px;width: 100%;background-size: cover" />
+                        </el-carousel-item>
+                        <el-carousel-item>
+                            <img src="{{ url_for('static', filename="big4.jpg") }}" style="height: 400px;width: 100%;background-size: cover" />
+                        </el-carousel-item>
+                    </el-carousel>
+                </div>
+                {% endblock %}
+                <el-divider></el-divider>
+                {% for message in get_flashed_messages() %}
+                    <div class="flash">{{ message }}</div>
+                {% endfor %}
+                {% block content %}{% endblock %}
+
+            </section>
+        </el-main>
+        <el-footer>Footer</el-footer>
+    </el-container>
+</div>
+</body>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        delimiters: ['{[', ']}'],
+        data: function () {
+            return {
+                visible: false,
+                drawer: false,
+                direction: 'rtl',
+                showiteminfo: {},
+                activeNames: 1,
+                textarea: '',
+                count: 0,
+                comments: [],
+                active: 0,
+            }
+        },
+        methods:{
+            next() {
+                if (this.active++ > 2) this.active = 0;
+            },
+            addshopping(iteminfo){
+                this.$http.post('/addshopping',{"item":iteminfo}).then(function(res){
+                    console.log(res)
+                    window.location.href='/shopping';
+                },function(res){
+                    console.log(res.status);
+                });
+            },
+            get_picture_url(name){
+                return "/static/"+name
+            },
+            showdetail(iteminfo){
+                this.$http.post('/getcomment',{"item":iteminfo}).then(function(res){
+                    console.log(res)
+                    this.comments = res.body
+                },function(res){
+                    console.log(res.status);
+                });
+                this.showiteminfo = iteminfo
+                this.drawer = true
+            },
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => {});
+            },
+            templateget:function(){
+                //发送get请求
+                this.$http.get('/try/ajax/ajax_info.txt', {params:{a:1, b:2}}).then(function(res){
+                    document.write(res.body);
+                },function(){
+                    console.log('请求失败处理');
+                });
+            },
+            addcomment:function(){
+                //发送 post 请求
+                this.$http.post('/createcomment',{"item": this.showiteminfo, "comment": this.textarea }).then(function(res){
+                    console.log(res)
+                    this.comments.push(res.body)
+                },function(res){
+                    console.log(res.status);
+                });
+            }
+
+        }
+    })
+</script>
+
+<style>
+    .el-row {
+        margin-bottom: 20px;
+        &:last-child {
+             margin-bottom: 0;
+         }
+    }
+    .el-col {
+        border-radius: 4px;
+    }
+
+    .bg-purple-dark {
+        background: #99a9bf;
+    }
+
+    .bg-purple {
+        background: #f9fafc;
+    }
+
+    .bg-purple-light {
+        background: #e5e9f2;
+    }
+
+    .grid-content {
+        border-radius: 4px;
+        min-height: 36px;
+    }
+
+    .row-bg {
+        padding: 10px 0;
+        background-color: #f9fafc;
+    }
+    .el-carousel__item h3 {
+    color: #475669;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 150px;
+    margin: 0;
+  }
+
+  .el-carousel__item:nth-child(2n) {
+     background-color: #99a9bf;
+  }
+
+  .el-carousel__item:nth-child(2n+1) {
+     background-color: #d3dce6;
+  }
+</style>

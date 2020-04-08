@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}{% endblock %}</h1>
+{% endblock %}
+
+{% block banner %}
+{% endblock %}
+
+{% block content %}
+
+    <el-container style="text-align: center;">
+        <el-main style="height:100px;display: inline-block;text-align: left;">
+            <el-steps :active="active" finish-status="success">
+                <el-step title="确认订单"></el-step>
+                <el-step title="付款"></el-step>
+                <el-step title="完成"></el-step>
+            </el-steps>
+        </el-main>
+    </el-container>
+    <el-main>
+        <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
+    </el-main>
+{% endblock %}
+
+<style>
+</style>
