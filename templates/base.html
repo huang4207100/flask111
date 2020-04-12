@@ -9,13 +9,21 @@
         <el-header>
             <el-row :gutter="20">
                 <el-col :span="8"><div class="grid-content bg-purple">
-                    <img src="{{ url_for('static', filename='logo.png') }}" height="40" /></div></el-col>
+                    <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='logo.png') }}" height="40" /></a></div></el-col>
                 <el-col :span="8"><div class="grid-content bg-purple">
-                    <el-input v-model="input" placeholder="请输入查询内容" prefix-icon="el-icon-search"></el-input></div></el-col>
+                    <div style="margin-top: 15px;">
+                        <el-input v-model="input" placeholder="Please enter content query" prefix-icon="el-icon-search" class="input-with-select">
+                            <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+                        </el-input>
+                    </div>
+
+                </div></el-col>
+
+
                 <el-col :span="8"><div class="grid-content bg-purple">
                 <div class="grid-content bg-purple">
-                <el-link href="{{ url_for('auth.register') }}" style="float:right">
-                    <el-button type="primary" icon="el-icon-present">购物车</el-button>
+                <el-link href="{{ url_for('item.shopping') }}" style="float:right">
+                    <el-button type="primary" icon="el-icon-present">Shopping Cart</el-button>
                 </el-link>
                     {% if g.user %}
                         <span>{{ g.user['username'] }}</span>
@@ -81,7 +89,9 @@
         delimiters: ['{[', ']}'],
         data: function () {
             return {
+                input:'',
                 visible: false,
+                isactive: false,
                 drawer: false,
                 direction: 'rtl',
                 showiteminfo: {},
@@ -90,11 +100,56 @@
                 count: 0,
                 comments: [],
                 active: 0,
+                shoppingitems: [],
+                cardinfo: {
+                    num: '',
+                    password: '',
+                    checkpassword: '',
+                    price: '',
+                },
+                rules: {
+                }
             }
         },
         methods:{
+            search(){
+                window.location.href="/search?info="+this.input
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            submitForm(formName) {
+                this.$http.post('/pay',{'cardinfo': this.cardinfo}).then(function(res){
+                    console.log(res)
+                    if (res.body['result']) {
+                        this.isactive = false;
+                    } else {
+                        this.$notify.error({
+                            title: 'error',
+                            message: res.body['msg']
+                        });
+                    }
+                },function(res){
+                    console.log(res.status);
+                });
+
+            },
+            deleteorder(iteminfo){
+                this.$http.post('/deleteorder',{"item":iteminfo}).then(function(res){
+                    location.reload()
+                },function(res){
+                    console.log(res.status);
+                });
+            },
             next() {
-                if (this.active++ > 2) this.active = 0;
+                if (this.active++ === 0 ) {
+                    this.isactive = true;
+                };
+                if (this.active === 2 ) {
+                    location.reload()
+                };
+                if (this.active > 2) this.active = 0;
+
             },
             addshopping(iteminfo){
                 this.$http.post('/addshopping',{"item":iteminfo}).then(function(res){
@@ -118,22 +173,20 @@
                 this.drawer = true
             },
             handleClose(done) {
-                this.$confirm('确认关闭？')
+                this.$confirm('Are you sure to close？')
                     .then(_ => {
                         done();
                     })
                     .catch(_ => {});
             },
             templateget:function(){
-                //发送get请求
                 this.$http.get('/try/ajax/ajax_info.txt', {params:{a:1, b:2}}).then(function(res){
                     document.write(res.body);
                 },function(){
-                    console.log('请求失败处理');
+                    console.log('error');
                 });
             },
             addcomment:function(){
-                //发送 post 请求
                 this.$http.post('/createcomment',{"item": this.showiteminfo, "comment": this.textarea }).then(function(res){
                     console.log(res)
                     this.comments.push(res.body)

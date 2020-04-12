@@ -20,20 +20,71 @@ def index():
     posts_list = list_split(posts, 3)
     return render_template('item/index.html', posts_list=posts_list)
 
+@bp.route('/search', methods=('GET', 'POST'))
+def search():
+    info = request.values['info']
+    posts = select_sql(f'SELECT * FROM db.item where name LIKE \'%{info}%\' ORDER BY id DESC;')
+    posts_list = list_split(posts, 3)
+    return render_template('item/index.html', posts_list=posts_list)
+
+@bp.route('/pay', methods=('GET', 'POST'))
+@login_required
+def pay():
+    if not request.json['cardinfo']['num']:
+        return json.dumps({'result': False, 'msg': 'the card num is null.'})
+    if not request.json['cardinfo']['password'] or not request.json['cardinfo']['checkpassword']:
+        return json.dumps({'result': False, 'msg': 'the card password is null.'})
+
+    if request.json['cardinfo']['password'] != request.json['cardinfo']['checkpassword']:
+        return json.dumps({'result': False, 'msg': 'the card password is different from checkpassword.'})
+    try:
+        money = int(request.json['cardinfo']['price'])
+    except:
+        return json.dumps({'result': False, 'msg': 'pleace enter the price with type of num like 999999999'})
+    userid = g.user[0]['id']
+    orders = select_sql(f'SELECT * FROM db.order where user_id={userid} and status=1;')
+    price = 0
+    for (index, order) in enumerate(orders):
+        item_id = order['item_id']
+        info = select_sql(f'SELECT * FROM db.item where id={item_id};')[0]
+        price += info['price']
+    if money < price:
+        return json.dumps({'result': False, 'msg': 'the price is not enough.'})
+    insert_sql(f'UPDATE db.order SET status = 2 WHERE user_id = {userid};')
+    return json.dumps({'result': True, 'msg': True})
+
+
+
 @bp.route('/shopping', methods=('GET', 'POST'))
 @login_required
 def shopping():
-    posts = select_sql('SELECT * FROM db.item ORDER BY id DESC;')
-    posts_list = list_split(posts, 3)
-    return render_template('item/shopping.html', posts_list=posts_list)
+    userid = g.user[0]['id']
+    orders = select_sql(f'SELECT * FROM db.order where user_id={userid} and status=1;')
+    price = 0
+    for (index, order) in enumerate(orders):
+        item_id = order['item_id']
+        info = select_sql(f'SELECT * FROM db.item where id={item_id};')[0]
+        orders[index]['iteminfo'] = info
+        price += info['price']
+    return render_template('item/shopping.html', posts_list=orders, totalprice=price)
+
+@bp.route('/deleteorder', methods=('GET', 'POST'))
+@login_required
+def deleteshopping():
+    if request.method == 'POST':
+        order_id = request.json['item']['id']
+        insert_sql(f'DELETE FROM db.order WHERE id = {order_id};')
+
+    return redirect(url_for('item.shopping'))
+
 
 @bp.route('/addshopping', methods=('GET', 'POST'))
 @login_required
 def addshopping():
-    if request.method == 'post':
+    if request.method == 'POST':
         item_id = int(request.json['item']['id'])
         userid = g.user[0]['id']
-        print(1111)
+        print(f'{item_id}---{userid}')
         insert_sql(f'INSERT INTO `db`.`order` (`item_id`,`user_id`,`status`,`idcard_name`,`idcard_password`) VALUES ({item_id}, {userid}, 1,1,1);')
     return json.dumps({'fffdf':31321})
 

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}{% endblock %}</h1>
+    <h1>{% block title %}{% endblock %}</h1>
 {% endblock %}
 
 {% block banner %}
@@ -12,15 +12,59 @@
     <el-container style="text-align: center;">
         <el-main style="height:100px;display: inline-block;text-align: left;">
             <el-steps :active="active" finish-status="success">
-                <el-step title="确认订单"></el-step>
-                <el-step title="付款"></el-step>
-                <el-step title="完成"></el-step>
+                <el-step title="Confirmation of order"></el-step>
+                <el-step title="payment"></el-step>
+                <el-step title="finish purchase"></el-step>
             </el-steps>
         </el-main>
     </el-container>
     <el-main>
-        <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
+
+        <el-tag type="danger">total: {{ totalprice }}</el-tag>
+        <el-row type="flex" class="row-bg" justify="space-around">
+            {% for post in posts_list %}
+                <el-card :body-style="{ padding: '0px' }">
+                    <img src="{{ url_for('static', filename=post['iteminfo']['picture']) }}" height="287" width="350"
+                         class="image">
+                    <div style="padding: 14px;">
+                        <span>{{ post['iteminfo']['name'] }}</span>
+                        <div class="bottom clearfix">
+                            <p>price:{{ post['iteminfo']['price'] }}</p>
+                            <el-button type="text" class="button" @click="deleteorder({{ post }})">delete item</el-button>
+                        </div>
+                    </div>
+                </el-card>
+            {% endfor %}
+        </el-row>
+        <el-button style="margin-top: 12px;" @click="next">next</el-button>
     </el-main>
+    <el-dialog
+            title="Please enter the bank card information:"
+            :visible.sync="isactive"
+            width="30%"
+            :before-close="handleClose">
+        <span slot="footer" class="dialog-footer">
+            <el-form :model="cardinfo" status-icon :rules="rules" ref="cardinfo" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="Bank card number" prop="num">
+                    <el-input v-model="cardinfo.num"></el-input>
+                </el-form-item>
+                <el-form-item label="Password" prop="password">
+                    <el-input type="password" v-model="cardinfo.password" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="Confirm" prop="checkpassword">
+                    <el-input type="password" v-model="cardinfo.checkpassword" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="price" prop="price">
+                    <el-input v-model="cardinfo.price"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('cardinfo')">Submit</el-button>
+                    <el-button @click="resetForm('cardinfo')">Reset</el-button>
+                    <el-button @click="isactive = false; active = 0">Cancel</el-button>
+                </el-form-item>
+            </el-form>
+            </span>
+    </el-dialog>
 {% endblock %}
 
 <style>

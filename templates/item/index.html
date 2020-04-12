@@ -2,7 +2,7 @@
 
 {% block header %}
     {% if g.user %}
-        <a class="action" href="{{ url_for('item.create') }}">New</a>
+        <a class="action" href="{{ url_for('item.create') }}"></a>
     {% endif %}
 {% endblock %}
 
@@ -16,8 +16,8 @@
                     <div style="padding: 14px;">
                         <span>{{ post['name'] }}</span>
                         <div class="bottom clearfix">
-                            <p>价格:{{ post['price'] }}</p>
-                            <el-button type="text" class="button" @click="showdetail({{ post }})">查看详情</el-button>
+                            <p>price:{{ post['price'] }}</p>
+                            <el-button type="text" class="button" @click="showdetail({{ post }})">View detalis</el-button>
                         </div>
                     </div>
                 </el-card>
@@ -26,7 +26,7 @@
     {% endfor %}
 
     <el-drawer
-            title="商品详情"
+            title="item detail"
             :visible.sync="drawer"
             :direction="direction"
             size="50%"
@@ -37,20 +37,22 @@
                     <img :src="get_picture_url(showiteminfo['picture'])" height="200" width="200" class="image">
                     <div>
                         <span>{[ showiteminfo['name'] ]}</span>
-                        <p>价格:{[ showiteminfo['price'] ]}</p>
-                        <p>描述:{[ showiteminfo['describe'] ]}</p>
+                        <p>price:{[ showiteminfo['price'] ]}</p>
+                        <p>describe:{[ showiteminfo['describe'] ]}</p>
                     </div>
                 </el-aside>
                 <el-main>
                     <el-input
                             type="textarea"
                             :rows="4"
-                            placeholder="请输入内容"
+                            placeholder="please enter content"
                             v-model="textarea">
                     </el-input>
-                    <el-button type="primary" @click="addcomment()">添加评论</el-button>
-                    <el-button type="primary" @click="addshopping(showiteminfo)">加入购物车</el-button>
-                    <el-button type="primary">进入购物车</el-button>
+                    <el-button type="primary" @click="addcomment()">Add comments</el-button>
+                    <el-button type="primary" @click="addshopping(showiteminfo)">add to cart</el-button>
+                    <el-link href="{{ url_for('item.shopping') }}" style="float:right">
+                        <el-button type="primary">enter shopping cart</el-button>
+                    </el-link>
 
                 </el-main>
             </el-container>
