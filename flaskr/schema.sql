@@ -18,10 +18,10 @@ CREATE TABLE `user` (
 
 CREATE TABLE `item` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL DEFAULT '商品名字',
-  `picture` varchar(45) DEFAULT '图片地址',
+  `name` varchar(45) NOT NULL DEFAULT 'item name',
+  `picture` varchar(45) DEFAULT 'item name',
   `price` int NOT NULL,
-  `describe` varchar(45) DEFAULT '文字描述',
+  `describe` varchar(45) DEFAULT 'item name',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -49,7 +49,19 @@ CREATE TABLE `order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-INSERT INTO `db`.`item` (`name`,`picture`,`price`,`describe`) VALUES ('兰博基尼','6.jpg','50333333','你买不起的车');
+INSERT INTO `db`.`item` (`name`,`picture`,`price`,`describe`) VALUES ('car111','1.jpg','50333333','the car hope you buy with money');
+
+INSERT INTO `db`.`item` (`name`,`picture`,`price`,`describe`) VALUES ('banana car','2.jpg','50333333','the car hope you buy with money');
+
+INSERT INTO `db`.`item` (`name`,`picture`,`price`,`describe`) VALUES ('big car','3.jpg','50333333','the car hope you buy with money');
+
+INSERT INTO `db`.`item` (`name`,`picture`,`price`,`describe`) VALUES ('small car','4.jpg','50333333','the car hope you buy with money');
+
+INSERT INTO `db`.`item` (`name`,`picture`,`price`,`describe`) VALUES ('hug car','5.jpg','50333333','the car hope you buy with money');
+
+INSERT INTO `db`.`item` (`name`,`picture`,`price`,`describe`) VALUES ('yellow car','6.jpg','50333333','the car hope you buy with money');
+
+INSERT INTO `db`.`item` (`name`,`picture`,`price`,`describe`) VALUES ('red car','7.jpg','50333333','the car hope you buy with money');
 
 
 
