@@ -16,14 +16,14 @@ def list_split(items, n):
 
 @bp.route('/')
 def index():
-    posts = select_sql('SELECT * FROM db.item ORDER BY id DESC;')
+    posts = select_sql('SELECT * FROM `1982906`.item ORDER BY id DESC;')
     posts_list = list_split(posts, 3)
     return render_template('item/index.html', posts_list=posts_list)
 
 @bp.route('/search', methods=('GET', 'POST'))
 def search():
     info = request.values['info']
-    posts = select_sql(f'SELECT * FROM db.item where name LIKE \'%{info}%\' ORDER BY id DESC;')
+    posts = select_sql(f'SELECT * FROM `1982906`.item where name LIKE \'%{info}%\' ORDER BY id DESC;')
     posts_list = list_split(posts, 3)
     return render_template('item/index.html', posts_list=posts_list)
 
@@ -42,15 +42,15 @@ def pay():
     except:
         return json.dumps({'result': False, 'msg': 'pleace enter the price with type of num like 999999999'})
     userid = g.user[0]['id']
-    orders = select_sql(f'SELECT * FROM db.order where user_id={userid} and status=1;')
+    orders = select_sql(f'SELECT * FROM `1982906`.order where user_id={userid} and status=1;')
     price = 0
     for (index, order) in enumerate(orders):
         item_id = order['item_id']
-        info = select_sql(f'SELECT * FROM db.item where id={item_id};')[0]
+        info = select_sql(f'SELECT * FROM `1982906`.item where id={item_id};')[0]
         price += info['price']
     if money < price:
         return json.dumps({'result': False, 'msg': 'the price is not enough.'})
-    insert_sql(f'UPDATE db.order SET status = 2 WHERE user_id = {userid};')
+    insert_sql(f'UPDATE `1982906`.order SET status = 2 WHERE user_id = {userid};')
     return json.dumps({'result': True, 'msg': True})
 
 
@@ -59,11 +59,11 @@ def pay():
 @login_required
 def shopping():
     userid = g.user[0]['id']
-    orders = select_sql(f'SELECT * FROM db.order where user_id={userid} and status=1;')
+    orders = select_sql(f'SELECT * FROM `1982906`.order where user_id={userid} and status=1;')
     price = 0
     for (index, order) in enumerate(orders):
         item_id = order['item_id']
-        info = select_sql(f'SELECT * FROM db.item where id={item_id};')[0]
+        info = select_sql(f'SELECT * FROM `1982906`.item where id={item_id};')[0]
         orders[index]['iteminfo'] = info
         price += info['price']
     return render_template('item/shopping.html', posts_list=orders, totalprice=price)
@@ -73,7 +73,7 @@ def shopping():
 def deleteshopping():
     if request.method == 'POST':
         order_id = request.json['item']['id']
-        insert_sql(f'DELETE FROM db.order WHERE id = {order_id};')
+        insert_sql(f'DELETE FROM `1982906`.order WHERE id = {order_id};')
 
     return redirect(url_for('item.shopping'))
 
@@ -85,7 +85,7 @@ def addshopping():
         item_id = int(request.json['item']['id'])
         userid = g.user[0]['id']
         print(f'{item_id}---{userid}')
-        insert_sql(f'INSERT INTO `db`.`order` (`item_id`,`user_id`,`status`,`idcard_name`,`idcard_password`) VALUES ({item_id}, {userid}, 1,1,1);')
+        insert_sql(f'INSERT INTO `1982906`.`order` (`item_id`,`user_id`,`status`,`idcard_name`,`idcard_password`) VALUES ({item_id}, {userid}, 1,1,1);')
     return json.dumps({'fffdf':31321})
 
 @bp.route('/createcomment', methods=('GET', 'POST'))
@@ -105,7 +105,7 @@ def create():
             flash(error)
         else:
             name = g.user[0]['username']
-            insert_sql(f'INSERT INTO `db`.`comment` (`value`,`item_id`,`name`) VALUES (\'{comment}\', {item_id}, \'{name}\');')
+            insert_sql(f'INSERT INTO `1982906`.`comment` (`value`,`item_id`,`name`) VALUES (\'{comment}\', {item_id}, \'{name}\');')
             return json.dumps({'name':name, 'value':comment})
             # return redirect(url_for('blog.index'))
 
@@ -122,7 +122,7 @@ def getcomment():
         if error is not None:
             flash(error)
         else:
-            infos = select_sql(f'SELECT name,value FROM db.comment where item_id={item_id};')
+            infos = select_sql(f'SELECT name,value FROM `1982906`.comment where item_id={item_id};')
             return json.dumps(infos)
             # return redirect(url_for('blog.index'))
 

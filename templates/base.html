@@ -1,7 +1,7 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} - Flaskr</title>
 {#<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">#}
-<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 
 <body>
 <div id="app">
@@ -74,15 +74,15 @@
 
             </section>
         </el-main>
-        <el-footer>Footer</el-footer>
+        <el-footer></el-footer>
     </el-container>
 </div>
 </body>
 
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="{{ url_for('static', filename='vue.js') }}"></script>
 <!-- import JavaScript -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+<script src="{{ url_for('static', filename='vue-resource.min.js') }}"></script>
 <script>
     new Vue({
         el: '#app',

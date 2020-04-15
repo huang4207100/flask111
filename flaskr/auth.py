@@ -20,11 +20,11 @@ def register():
             error = 'Username is required.'
         elif not password:
             error = 'Password is required.'
-        elif len(select_sql(f'SELECT * FROM db.user WHERE username = \'{username}\';')) != 0:
+        elif len(select_sql(f'SELECT * FROM `1982906`.user WHERE username = \'{username}\';')) != 0:
             error = 'User {} is already registered.'.format(username)
 
         if error is None:
-            insert_sql(f'INSERT INTO db.user (username, password) VALUES (\'{username}\', \'{generate_password_hash(password)}\')')
+            insert_sql(f'INSERT INTO `1982906`.user (username, password) VALUES (\'{username}\', \'{generate_password_hash(password)}\')')
             return redirect(url_for('auth.login'))
 
         flash(error)
@@ -39,7 +39,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         error = None
-        user = select_sql(f'SELECT * FROM db.user WHERE username = \'{username}\'')
+        user = select_sql(f'SELECT * FROM `1982906`.user WHERE username = \'{username}\'')
 
         if user is None:
             error = 'Incorrect username.'
@@ -63,7 +63,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = select_sql(f'SELECT * FROM user WHERE id = {user_id}')
+        g.user = select_sql(f'SELECT * FROM `1982906`.user WHERE id = {user_id}')
 
 
 @bp.route('/logout')

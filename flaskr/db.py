@@ -16,7 +16,7 @@ def get_db():
             host=current_app.config['DATABASE']['host'],
             user=current_app.config['DATABASE']['user'],
             password=current_app.config['DATABASE']['password'],
-            db='db',
+            db='1982906',
             charset=current_app.config['DATABASE']['charset'],
             cursorclass=pymysql.cursors.DictCursor
         )
