@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}{% endblock %}</h1>
+{% endblock %}
+
+{% block banner %}
+{% endblock %}
+
+{% block content %}
+
+    <el-container style="text-align: center;">
+        <el-main style="height:100px;display: inline-block;text-align: left;">
+            <h1>HOPE LIST</h1>
+        </el-main>
+    </el-container>
+    <el-main>
+        <el-row type="flex" class="row-bg" justify="space-around">
+            {% for post in posts_list %}
+                <el-card :body-style="{ padding: '0px' }">
+                    <img src="{{ url_for('static', filename=post['iteminfo']['picture']) }}" height="287" width="350"
+                         class="image">
+                    <div style="padding: 14px;">
+                        <span>{{ post['iteminfo']['name'] }}</span>
+                        <div class="bottom clearfix">
+                            <p>price:{{ post['iteminfo']['price'] }}</p>
+                            <el-button type="text" class="button" @click="deletehope({{ post }})">delete item</el-button>
+                        </div>
+                    </div>
+                </el-card>
+            {% endfor %}
+        </el-row>
+    </el-main>
+{% endblock %}
+
+<style>
+</style>

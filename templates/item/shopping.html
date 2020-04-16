@@ -55,7 +55,7 @@
                     <el-input type="password" v-model="cardinfo.checkpassword" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="price" prop="price">
-                    <el-input v-model="cardinfo.price"></el-input>
+                    <el-tag type="danger">{{ totalprice }}</el-tag>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('cardinfo')">Submit</el-button>

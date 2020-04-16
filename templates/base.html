@@ -22,15 +22,20 @@
 
                 <el-col :span="8"><div class="grid-content bg-purple">
                 <div class="grid-content bg-purple">
-                <el-link href="{{ url_for('item.shopping') }}" style="float:right">
-                    <el-button type="primary" icon="el-icon-present">Shopping Cart</el-button>
-                </el-link>
+
                     {% if g.user %}
                         <span>{{ g.user['username'] }}</span>
+                        <el-link href="{{ url_for('item.hopes') }}" style="float:right">
+                            <el-button type="primary" icon="el-icon-present">Hopes</el-button>
+                        </el-link>
+                        <el-link href="{{ url_for('item.shopping') }}" style="float:right">
+                            <el-button type="primary" icon="el-icon-present">Shopping Cart</el-button>
+                        </el-link>
                         <el-link href="{{ url_for('auth.logout') }}" style="float:right">
                             <el-button type="primary" icon="el-icon-present">Log Out</el-button>
                         </el-link>
                     {% else %}
+
                         <el-link href="{{ url_for('auth.register') }}" style="float:right">
                             <el-button type="primary" icon="el-icon-present">register</el-button>
                         </el-link>
@@ -141,6 +146,13 @@
                     console.log(res.status);
                 });
             },
+            deletehope(iteminfo){
+                this.$http.post('/deletehope',{"item":iteminfo}).then(function(res){
+                    location.reload()
+                },function(res){
+                    console.log(res.status);
+                });
+            },
             next() {
                 if (this.active++ === 0 ) {
                     this.isactive = true;
@@ -155,6 +167,14 @@
                 this.$http.post('/addshopping',{"item":iteminfo}).then(function(res){
                     console.log(res)
                     window.location.href='/shopping';
+                },function(res){
+                    console.log(res.status);
+                });
+            },
+            addhopes(iteminfo){
+                this.$http.post('/addhopes',{"item":iteminfo}).then(function(res){
+                    console.log(res)
+                    window.location.href='/hopes';
                 },function(res){
                     console.log(res.status);
                 });

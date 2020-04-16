@@ -16,6 +16,10 @@ def list_split(items, n):
 
 @bp.route('/')
 def index():
+    return render_template('index.html')
+
+@bp.route('/index')
+def index_info():
     posts = select_sql('SELECT * FROM `1982906`.item ORDER BY id DESC;')
     posts_list = list_split(posts, 3)
     return render_template('item/index.html', posts_list=posts_list)
@@ -73,7 +77,7 @@ def shopping():
 def deleteshopping():
     if request.method == 'POST':
         order_id = request.json['item']['id']
-        insert_sql(f'DELETE FROM `1982906`.order WHERE id = {order_id};')
+        insert_sql(f'DELETE FROM `1982906`.order WHERE id = {order_id} and status=1;')
 
     return redirect(url_for('item.shopping'))
 
@@ -87,6 +91,41 @@ def addshopping():
         print(f'{item_id}---{userid}')
         insert_sql(f'INSERT INTO `1982906`.`order` (`item_id`,`user_id`,`status`,`idcard_name`,`idcard_password`) VALUES ({item_id}, {userid}, 1,1,1);')
     return json.dumps({'fffdf':31321})
+
+
+@bp.route('/hopes', methods=('GET', 'POST'))
+@login_required
+def hopes():
+    userid = g.user[0]['id']
+    orders = select_sql(f'SELECT * FROM `1982906`.order where user_id={userid} and status=3;')
+    price = 0
+    for (index, order) in enumerate(orders):
+        item_id = order['item_id']
+        info = select_sql(f'SELECT * FROM `1982906`.item where id={item_id};')[0]
+        orders[index]['iteminfo'] = info
+        price += info['price']
+    return render_template('item/hopes.html', posts_list=orders, totalprice=price)
+
+@bp.route('/deletehope', methods=('GET', 'POST'))
+@login_required
+def deletehope():
+    if request.method == 'POST':
+        order_id = request.json['item']['id']
+        insert_sql(f'DELETE FROM `1982906`.order WHERE id = {order_id} and status=3;')
+
+    return redirect(url_for('item.hopes'))
+
+@bp.route('/addhopes', methods=('GET', 'POST'))
+@login_required
+def addhopes():
+    if request.method == 'POST':
+        item_id = int(request.json['item']['id'])
+        userid = g.user[0]['id']
+        print(f'{item_id}---{userid}')
+        insert_sql(f'INSERT INTO `1982906`.`order` (`item_id`,`user_id`,`status`,`idcard_name`,`idcard_password`) VALUES ({item_id}, {userid}, 3, 1, 1);')
+    return json.dumps({'fffdf':31321})
+
+
 
 @bp.route('/createcomment', methods=('GET', 'POST'))
 @login_required

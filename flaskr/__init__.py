@@ -3,6 +3,10 @@ import os
 from flask import Flask
 
 """
+1. 封面  banana car  电话号码  ---
+2. 愿望列表                    ---
+3. 发票  收获地址
+4. 金额自动生成                ---
 """
 
 
@@ -32,11 +36,6 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
-
-    # a simple page that says hello
-    @app.route('/index')
-    def hello():
-        return 'Hello, World!'
 
     from . import db
     db.init_app(app)

@@ -50,9 +50,7 @@
                     </el-input>
                     <el-button type="primary" @click="addcomment()">Add comments</el-button>
                     <el-button type="primary" @click="addshopping(showiteminfo)">add to cart</el-button>
-                    <el-link href="{{ url_for('item.shopping') }}" style="float:right">
-                        <el-button type="primary">enter shopping cart</el-button>
-                    </el-link>
+                    <el-button type="primary" @click="addhopes(showiteminfo)">add to hopes</el-button>
 
                 </el-main>
             </el-container>
