@@ -31,6 +31,9 @@
                         <el-link href="{{ url_for('item.shopping') }}" style="float:right">
                             <el-button type="primary" icon="el-icon-present">Shopping Cart</el-button>
                         </el-link>
+                        <el-link href="{{ url_for('item.paylist') }}" style="float:right">
+                            <el-button type="primary" icon="el-icon-present">pay list</el-button>
+                        </el-link>
                         <el-link href="{{ url_for('auth.logout') }}" style="float:right">
                             <el-button type="primary" icon="el-icon-present">Log Out</el-button>
                         </el-link>
@@ -98,13 +101,17 @@
                 visible: false,
                 isactive: false,
                 drawer: false,
+                showpicture: false,
+                picurl: "",
                 direction: 'rtl',
                 showiteminfo: {},
                 activeNames: 1,
                 textarea: '',
                 count: 0,
                 comments: [],
+                payactive: false,
                 active: 0,
+                select_pay_id: 0,
                 shoppingitems: [],
                 cardinfo: {
                     num: '',
@@ -112,11 +119,41 @@
                     checkpassword: '',
                     price: '',
                 },
+                payinfo: {
+                    id: '',
+                    phone: '',
+                    address: '',
+                    realname: '',
+                },
                 rules: {
                 }
             }
         },
         methods:{
+            generate_pdf(info) {
+                this.$http.post('/pdf',{'info': info}).then(function(res){
+                    console.log(res)
+                    if (res.body['result']) {
+                        this.picurl = res.body['msg'];
+                        this.showpicture = true;
+                    } else {
+                        this.$notify.error({
+                            title: 'error',
+                            message: res.body['msg']
+                        });
+                    }
+                },function(res){
+                    console.log(res.status);
+                });
+
+            },
+            select_info( post ){
+              this.select_pay_id = post['id'];
+              this.payinfo['phone'] = post['phone'];
+              this.payinfo['address'] = post['address'];
+              this.payinfo['realname'] = post['realname'];
+              this.payactive = true;
+            },
             search(){
                 window.location.href="/search?info="+this.input
             },
@@ -128,6 +165,24 @@
                     console.log(res)
                     if (res.body['result']) {
                         this.isactive = false;
+                    } else {
+                        this.$notify.error({
+                            title: 'error',
+                            message: res.body['msg']
+                        });
+                    }
+                },function(res){
+                    console.log(res.status);
+                });
+
+            },
+            submitupdateForm(formName) {
+                this.payinfo['id'] = this.select_pay_id
+                this.$http.post('/add_address',{'info': this.payinfo}).then(function(res){
+                    console.log(res)
+                    if (res.body['result']) {
+                        this.payactive = false;
+                        location.reload()
                     } else {
                         this.$notify.error({
                             title: 'error',

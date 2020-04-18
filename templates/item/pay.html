@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}{% endblock %}</h1>
+{% endblock %}
+
+{% block banner %}
+{% endblock %}
+
+{% block content %}
+
+    <el-container style="text-align: center;">
+        <el-main style="height:100px;display: inline-block;text-align: left;">
+        </el-main>
+    </el-container>
+    <el-main>
+                <table border="1">
+                    <tr>
+                        <th>id</th>
+                        <th>car</th>
+                        <th>money</th>
+                        <th>phone</th>
+                        <th>address</th>
+                        <th>realname</th>
+                        <th>update</th>
+                        <th>get pdf</th>
+                    </tr>
+
+                    {% for post in pay_list %}
+                    <tr>
+                        <td>{{ post['id'] }}</td>
+                        <td>{{ post['car'] }}</td>
+                        <td>{{ post['money'] }}</td>
+                        <td>{{ post['address'] }}</td>
+                        <td>{{ post['phone'] }}</td>
+                        <td>{{ post['realname'] }}</td>
+                        <td><el-button type="text" class="button" @click="select_info({{ post }})">add address</el-button></td>
+                        <td><el-button type="text" class="button" @click="generate_pdf({{ post }})">pdf</el-button></td>
+                    </tr>
+
+                    {% endfor %}
+                </table>
+    </el-main>
+
+    <el-dialog
+            title="the order:"
+            :visible.sync="showpicture"
+            width="40%"
+            :before-close="handleClose">
+        <span slot="footer" class="dialog-footer">
+            <el-image style="width: 650px; height: 400px" :src="picurl"></el-image>
+        </span>
+    </el-dialog>
+
+
+    <el-dialog
+            title="Please enter the bank card information:"
+            :visible.sync="payactive"
+            width="30%"
+            :before-close="handleClose">
+        <span slot="footer" class="dialog-footer">
+            <el-form :model="payinfo" status-icon :rules="rules" ref="cardinfo" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="address" prop="address">
+                    <el-input v-model="payinfo.address"></el-input>
+                </el-form-item>
+                <el-form-item label="phone" prop="phone">
+                    <el-input v-model="payinfo.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="realname" prop="realname">
+                    <el-input v-model="payinfo.realname"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitupdateForm('payinfo')">Submit</el-button>
+                    <el-button @click="payactive = false">Cancel</el-button>
+                </el-form-item>
+            </el-form>
+            </span>
+    </el-dialog>
+{% endblock %}
+
+<style>
+    table
+    {
+        border-collapse: collapse;
+        text-align: center;
+        table-layout: fixed;
+        width: 100%;
+    }
+    table td, table th
+    {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+    table thead th
+    {
+        background-color: #CCE8EB;
+        width: 200px;
+    }
+    table tr
+    {
+        background: #fff;
+    }
+            /*        table tr:nth-child(even)
+                    {
+
+                    }*/
+    .title{
+        background: #F5FAFA;
+    }
+</style>

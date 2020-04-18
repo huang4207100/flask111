@@ -2,13 +2,6 @@ import os
 
 from flask import Flask
 
-"""
-1. 封面  banana car  电话号码  ---
-2. 愿望列表                    ---
-3. 发票  收获地址
-4. 金额自动生成                ---
-"""
-
 
 def create_app(test_config=None):
     app = Flask(__name__, template_folder="../templates", static_folder="../static", instance_relative_config=True)
