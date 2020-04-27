@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+    <main class="inline-block-center">
+
+  <img src = "{{ url_for('static', filename='img/' + book.image_file) }}">
+
+  <p>"{{ book.title }}" &nbsp </p>
+    <p>Description: {{ book.description }}</p>
+
+  <p>Price: {{ book.price }}</p>
+
+  <a class="" href="/add_to_cart/{{book.id}}">Add to Cart</a>
+    </main>
+
+{% endblock content %}

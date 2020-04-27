@@ -2,6 +2,7 @@
 <title>{% block title %}{% endblock %} - Flaskr</title>
 {#<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">#}
 <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 
 <body>
 <div id="app">
@@ -9,7 +10,7 @@
         <el-header>
             <el-row :gutter="20">
                 <el-col :span="8"><div class="grid-content bg-purple">
-                    <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='logo.png') }}" height="40" /></a></div></el-col>
+                    <a href="/index"><span>Banana car</span></a></div></el-col>
                 <el-col :span="8"><div class="grid-content bg-purple">
                     <div style="margin-top: 15px;">
                         <el-input v-model="input" placeholder="Please enter content query" prefix-icon="el-icon-search" class="input-with-select">
@@ -86,6 +87,7 @@
     </el-container>
 </div>
 </body>
+
 
 <script src="{{ url_for('static', filename='vue.js') }}"></script>
 <!-- import JavaScript -->
